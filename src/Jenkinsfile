@@ -27,7 +27,7 @@ node {
       
       // Send Slack Notification
       sh """
-         curl -d "{\"text\": \"${APP_NAME}/${BRANCH} (STATUS) - Deploy build ${app_info.build_id} started for GIT COMMIT ${app_info.build_hash}.\"}" -H "Content-Type: application/json" -X POST ${env.SLACK_INSIGHTS_BOTS}
+         curl -d \"{'text': '${APP_NAME}/${BRANCH} (STATUS) - Deploy build ${app_info.build_id} started for GIT COMMIT ${app_info.build_hash}.'}\" -H \"Content-Type: application/json\" -X POST ${env.SLACK_INSIGHTS_BOTS}
        """
       
 
