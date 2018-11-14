@@ -25,10 +25,13 @@ node {
       app_info.build_id = env.BUILD_ID
       writeJSON file: "./app.info.json", json: app_info
       
+      String SLACK_TEXT = "${APP_NAME}/${BRANCH} (STATUS) - Deploy build ${app_info.build_id} started for GIT COMMIT ${app_info.build_hash}."
+      String SLACK_JSON = "{\"text\": \"${SLACK_TEXT}\"}"
+      
       // Send Slack Notification
       sh """
-         curl -d \"{'text': '${APP_NAME}/${BRANCH} (STATUS) - Deploy build ${app_info.build_id} started for GIT COMMIT ${app_info.build_hash}.'}\" -H \"Content-Type: application/json\" -X POST ${env.SLACK_INSIGHTS_BOTS}
-       """
+           curl -d \"${SLACK_JSON}\" -H \"Content-Type: application/json\" -X POST ${env.SLACK_INSIGHTS_BOTS}
+      """
       
 
       AKAMAI_PATH = "/114034/${PREFIX}/platform/${APP_NAME}"
