@@ -30,8 +30,7 @@ node {
       // Send Slack Notification
       String SLACK_TEXT = "${APP_NAME}/${BRANCH} [STATUS] - Deploy build ${app_info.build_id} started for GIT COMMIT ${app_info.build_hash}."
       def SLACK_JSON = JsonOutput.toJson([text: SLACK_TEXT])
-      String SLACK_INSIGHTS_BOTS = "https://hooks.slack.com/services/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"
-      sh "curl -X POST --data-urlencode \'payload=${SLACK_JSON}\' ${SLACK_INSIGHTS_BOTS}"
+      sh "curl -X POST --data-urlencode \'payload=${SLACK_JSON}\' ${env.SLACK_INSIGHTS_BOTS}"
       
 
       AKAMAI_PATH = "/114034/${PREFIX}/platform/${APP_NAME}"
