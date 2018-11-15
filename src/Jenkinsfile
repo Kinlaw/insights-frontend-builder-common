@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput;
+
 node {
   stage ("deploy") {
     checkout scm
@@ -24,14 +26,12 @@ node {
       app_info.build_hash = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
       app_info.build_id = env.BUILD_ID
       writeJSON file: "./app.info.json", json: app_info
-      
-      String SLACK_TEXT = "${APP_NAME}/${BRANCH} (STATUS) - Deploy build ${app_info.build_id} started for GIT COMMIT ${app_info.build_hash}."
-      String SLACK_JSON = "{\"text\": \"${SLACK_TEXT}\"}"
-      
+ 
       // Send Slack Notification
-      sh """
-           curl -d \"${SLACK_JSON}\" -H \"Content-Type: application/json\" -X POST ${env.SLACK_INSIGHTS_BOTS}
-      """
+      String SLACK_TEXT = "${APP_NAME}/${BRANCH} [STATUS] - Deploy build ${app_info.build_id} started for GIT COMMIT ${app_info.build_hash}."
+      def SLACK_JSON = JsonOutput.toJson([text: SLACK_TEXT])
+      String SLACK_INSIGHTS_BOTS = "https://hooks.slack.com/services/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"
+      sh "curl -X POST --data-urlencode \'payload=${SLACK_JSON}\' ${SLACK_INSIGHTS_BOTS}"
       
 
       AKAMAI_PATH = "/114034/${PREFIX}/platform/${APP_NAME}"
